@@ -33,7 +33,7 @@ int main()
 	/* Register slash command here in on_ready */
 	bot.on_ready([&bot](const dpp::ready_t& event) {
 
-		bot.set_presence(dpp::presence(dpp::ps_online, dpp::at_game, "Test D++ !"));
+		bot.set_presence(dpp::presence(dpp::ps_online, dpp::at_game, "Discord Bot C++ by EL_IKO "));
 
 		dpp::slashcommand ping("ping", "Ping Pong !", bot.me.id);
 		dpp::slashcommand test("test", "Hello World !", bot.me.id);
