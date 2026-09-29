@@ -1,19 +1,48 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "MyBot.h"
 #include <dpp/dpp.h>
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <stdexcept>
 
-/* Be sure to place your token in the line below.
- * Follow steps here to get a token:
- * https://dpp.dev/creating-a-bot-application.html
- * When you invite the bot, be sure to invite it with the 
- * scopes 'bot' and 'applications.commands', e.g.
- * https://discord.com/oauth2/authorize?client_id=940762342495518720&scope=bot+applications.commands&permissions=139586816064
- */
-const std::string    BOT_TOKEN    = "add your token here";
+
+std::string get_env_var(const std::string& var)
+{
+	const char* val = std::getenv(var.c_str());
+	if (val != nullptr) {
+		return std::string(val);
+	}
+
+	std::ifstream file(".env");
+	if (file.is_open()) {
+		std::string line;
+		while (std::getline(file, line)) {
+			if (!line.empty() && line.back() == '\r') {
+				line.pop_back();
+			}
+
+			size_t pos = line.find('=');
+			if (pos != std::string::npos) {
+				std::string key = line.substr(0, pos);
+				std::string value = line.substr(pos + 1);
+				if (key == var) {
+					return value;
+				}
+			}
+		}
+	}
+	throw std::runtime_error("Environment variable " + var + " not set");
+}
 
 int main()
 {
+
+	const std::string TOKEN = get_env_var("BOT_TOKEN");
+
 	/* Create bot cluster */
-	dpp::cluster bot(BOT_TOKEN);
+	dpp::cluster bot(TOKEN);
 
 	/* Output simple log messages to stdout */
 	bot.on_log(dpp::utility::cout_logger());
