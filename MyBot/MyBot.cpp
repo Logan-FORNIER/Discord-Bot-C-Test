@@ -37,8 +37,9 @@ int main()
 
 		dpp::slashcommand ping("ping", "Ping Pong !", bot.me.id);
 		dpp::slashcommand test("test", "Hello World !", bot.me.id);
+		dpp::slashcommand presentation("presentation", "Génère une présentation de EL_IKO", bot.me.id);
 
-		bot.guild_bulk_command_create({ping, test}, GUILD_ID);
+		bot.guild_bulk_command_create({ping, test, presentation}, GUILD_ID);
 
 	});
 
@@ -50,9 +51,28 @@ int main()
 
 		}
 
-		if (event.command.get_command_name() == "ping"){
+		if (event.command.get_command_name() == "ping") {
 
 			event.reply("Pong !");
+
+		}
+
+		if (event.command.get_command_name() == "presentation") {
+
+			dpp::embed presentation = dpp::embed()
+				.set_color(dpp::colors::red)
+				.set_title("Présentation EL_IKO")
+				.set_url("https://github.com/Logan-FORNIER")
+				.add_field(
+
+					"Présentation Courte",
+					"Bonjour, je suis EL_IKO petit dev indépendant apprenant le C++"
+
+				);
+
+			dpp::message msg(event.command.channel_id, presentation);
+
+			event.reply(msg);
 
 		}
 
