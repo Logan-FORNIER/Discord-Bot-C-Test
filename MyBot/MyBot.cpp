@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 
 #include "MyBot.h"
 #include <dpp/dpp.h>
@@ -31,13 +31,13 @@ int main()
 	bot.on_log(dpp::utility::cout_logger());
 
 	/* Register slash command here in on_ready */
-	bot.on_ready([&bot](const dpp::ready_t& event) {
+	bot.on_ready([&bot, GUILD_ID](const dpp::ready_t& event) {
 
 		bot.set_presence(dpp::presence(dpp::ps_online, dpp::at_game, "Discord Bot C++ by EL_IKO "));
 
 		dpp::slashcommand ping("ping", "Ping Pong !", bot.me.id);
 		dpp::slashcommand test("test", "Hello World !", bot.me.id);
-		dpp::slashcommand presentation("presentation", "G�n�re une pr�sentation de EL_IKO", bot.me.id);
+		dpp::slashcommand presentation("presentation", "Génère une présentation de EL_IKO", bot.me.id);
 
 		bot.guild_bulk_command_create({ping, test, presentation}, GUILD_ID);
 
@@ -61,18 +61,48 @@ int main()
 
 			dpp::embed presentation = dpp::embed()
 				.set_color(dpp::colors::red)
-				.set_title("Pr�sentation EL_IKO")
+				.set_title("Présentation EL_IKO")
 				.set_url("https://github.com/Logan-FORNIER")
+				.set_description("Bonjour, \n\nJe suis EL_IKO un petit dev indépendant apprenant le C++ au Gaming Campus.")
 				.add_field(
 
-					"Pr�sentation Courte",
-					"Bonjour, je suis EL_IKO petit dev ind�pendant apprenant le C++"
+					"Objectif",
+					"Mon Objectif interne au sein du Gaming Campus est celle de devenir Developpeur Expert C++ spécialisé dans la création de jeux vidéo 3D et  d'intelligence artificiel."
 
-				);
+				)
+				.add_field(
 
-			dpp::message msg(event.command.channel_id, presentation);
+					"Langage de Programmation Découvert",
+					"- C++ \n- LuaU \n- Lua \n- Glua \n- Python \n- JavaScript \n- XML \n- Assembleur \n- Abap \n- SQL"
 
-			event.reply(msg);
+				)
+				.add_field(
+
+					"Statut",
+					"[Première Année de G.Tech](<https://gamingcampus.fr/ecoles/ecole-developpeur-jeux-video-g-tech.html>]"
+
+				)
+				.add_field(
+
+					"Projet Personnel",
+					"J'ai a mon actif différent projet personnel en cours ou fini tel que : \n\n- [The Maze ( Roblox Game )](<https://www.roblox.com/games/105209271404283/Le-labyrinthe>) \n- Bot Discord Test C++ \n- Site Web Portfolio"
+
+				)
+				.add_field(
+
+					"Mes Résaux",
+					"- Github : [Logan-FORNIER](<https://github.com/Logan-FORNIER>) \n- Discord : <@1066421608199241738>"
+
+				)
+				.set_footer(
+
+					dpp::embed_footer()
+					.set_text("©2026 EL_IKO, Tout Droit Reservé")
+
+				)
+				.set_timestamp(time(0));
+				
+			event.reply(dpp::message().add_embed(presentation));
 
 		}
 
