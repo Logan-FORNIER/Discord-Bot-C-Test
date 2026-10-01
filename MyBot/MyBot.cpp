@@ -23,14 +23,12 @@ int main()
 
 	const std::string TOKEN = get_env_var("BOT_TOKEN");
 	const std::int64_t GUILD_ID = 1109223366629527603;
+	const std::uint32_t intents = dpp::i_all_intents;
 
-	/* Create bot cluster */
-	dpp::cluster bot(TOKEN);
+	dpp::cluster bot(TOKEN, intents);
 
-	/* Output simple log messages to stdout */
 	bot.on_log(dpp::utility::cout_logger());
 
-	/* Register slash command here in on_ready */
 	bot.on_ready([&bot, GUILD_ID](const dpp::ready_t& event) {
 
 		bot.set_presence(dpp::presence(dpp::ps_online, dpp::at_game, "Discord Bot C++ by EL_IKO "));
@@ -67,7 +65,7 @@ int main()
 				.add_field(
 
 					"Objectif",
-					"Mon Objectif interne au sein du Gaming Campus est celle de devenir Developpeur Expert C++ spécialisé dans la création de jeux vidéo 3D et  d'intelligence artificiel."
+					"Mon Objectif interne au sein du Gaming Campus est celle de devenir Developpeur Expert C++ spécialisé dans la création de jeux vidéo 3D et d'intelligence artificiel."
 
 				)
 				.add_field(
@@ -85,30 +83,58 @@ int main()
 				.add_field(
 
 					"Projet Personnel",
-					"J'ai a mon actif différent projet personnel en cours ou fini tel que : \n\n- [The Maze ( Roblox Game )](<https://www.roblox.com/games/105209271404283/Le-labyrinthe>) \n- Bot Discord Test C++ \n- Site Web Portfolio"
+					"J'ai à mon actif différents projets personnel en cours ou fini tel que : \n\n- [The Maze ( Roblox Game )](<https://www.roblox.com/games/105209271404283/Le-labyrinthe>) \n- Bot Discord Test C++ \n- Site Web Portfolio"
 
 				)
 				.add_field(
 
-					"Mes Résaux",
+					"Mes Réseaux",
 					"- Github : [Logan-FORNIER](<https://github.com/Logan-FORNIER>) \n- Discord : <@1066421608199241738>"
 
 				)
 				.set_footer(
 
 					dpp::embed_footer()
-					.set_text("©2026 EL_IKO, Tout Droit Reservé")
+					.set_text("©2026 EL_IKO, Touts Droits Reservé")
 
 				)
 				.set_timestamp(time(0));
-				
+
 			event.reply(dpp::message().add_embed(presentation));
 
 		}
 
 	});
 
-	/* Start the bot */
+	bot.on_message_create([&bot](const dpp::message_create_t& event) {
+
+		if (event.msg.author.is_bot()) return;
+
+		std::string msg = event.msg.content;
+
+		std::transform(msg.begin(), msg.end(), msg.begin(), [](unsigned char message) {
+
+			return std::tolower(message);
+
+		});
+
+		if (msg == "bonjour" || msg == "salut" || msg == "bonjours" || msg == "saluts") {
+
+			event.reply("Salut !");
+			
+			return;
+
+		}
+
+		if (msg == "bonsoir") {
+
+			event.reply("Bonsoir !");
+			return;
+
+		}
+
+	});
+
 	bot.start(dpp::st_wait);
 
 	return 0;
