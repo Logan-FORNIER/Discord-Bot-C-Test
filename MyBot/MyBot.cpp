@@ -36,22 +36,63 @@ int main()
 		dpp::slashcommand ping("ping", "Ping Pong !", bot.me.id);
 		dpp::slashcommand test("test", "Hello World !", bot.me.id);
 		dpp::slashcommand presentation("presentation", "Génère une présentation de EL_IKO", bot.me.id);
+		dpp::slashcommand addrole("addrole", "Ajoute un role a un joueurs", bot.me.id);
 
-		bot.guild_bulk_command_create({ping, test, presentation}, GUILD_ID);
+		addrole.add_option(dpp::command_option(dpp::co_user, "user", "User to give role to", true));
+		addrole.add_option(dpp::command_option(dpp::co_role, "role", "Role to give", true));
+
+		bot.guild_bulk_command_create({ping, test, presentation, addrole}, GUILD_ID);
 
 	});
 
-	bot.on_slashcommand([](const dpp::slashcommand_t& event) {
+	bot.on_slashcommand([&bot](const dpp::slashcommand_t& event) {
 
 		if (event.command.get_command_name() == "test") {
 
-			event.reply("Hello World !");
+			event.reply(dpp::message("Hello World !").set_flags(dpp::m_ephemeral));
 
 		}
 
 		if (event.command.get_command_name() == "ping") {
 
 			event.reply("Pong !");
+
+		}
+
+		if (event.command.get_command_name() == "addrole") {
+
+			dpp::snowflake user_id = std::get<dpp::snowflake>(event.get_parameter("user"));
+			dpp::snowflake role_id = std::get<dpp::snowflake>(event.get_parameter("role"));
+
+			dpp::guild* guild = dpp::find_guild(event.command.guild_id);
+
+			if (guild) {
+
+				dpp::role* target_role = dpp::find_role(role_id);
+				dpp::guild_member bot_member = guild->members[bot.me.id];
+
+				uint16_t highest_bot_position = 0;
+				for (const auto& r_id : bot_member.get_roles()) {
+					dpp::role* r = dpp::find_role(r_id);
+					if (r_id && r->position > highest_bot_position) {
+
+						highest_bot_position = r->position;
+
+					}
+
+				}
+
+				if (target_role && target_role->position >= highest_bot_position) {
+
+					event.reply("Impossible d'attribuer ce rôle : il est situé au dessus du rôle du bot");
+					return;
+
+				}
+				bot.guild_member_add_role(event.command.guild_id, user_id, role_id);
+
+				event.reply("Rôle ajouté avec succès");
+
+			}
 
 		}
 
