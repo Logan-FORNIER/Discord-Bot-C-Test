@@ -7,7 +7,6 @@
 #include <iostream>
 #include <stdexcept>
 
-
 std::string get_env_var(const std::string& var)
 {
 	const char* val = std::getenv(var.c_str());
